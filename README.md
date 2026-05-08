@@ -88,7 +88,7 @@ MYDOC/
 ## 1️⃣ Clone Repository
 
 ```bash
-git clone https://github.com/your-username/mydoc.git
+git clone https://github.com/abhishek838101/mydoc
 ```
 
 ---
@@ -98,7 +98,7 @@ git clone https://github.com/your-username/mydoc.git
 ```bash
 cd backend
 npm install
-npm start
+node server.js
 ```
 
 Backend will run on:
@@ -127,16 +127,6 @@ http://localhost:5173
 
 ---
 
-# 🌟 Core Components
-
-| Component       | Description                      |
-| --------------- | -------------------------------- |
-| UploadBox.jsx   | Handles file upload UI           |
-| FilePreview.jsx | Shows uploaded file preview      |
-| FileList.jsx    | Displays uploaded files          |
-| Loader.jsx      | Loading animation during uploads |
-
----
 
 # 🔥 Future Improvements
 
