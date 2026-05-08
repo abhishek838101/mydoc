@@ -9,9 +9,9 @@ import {
 import "./index.css";
 
 import App from "./App.jsx";
-import TermsAndConditions from "./components/TermsAndConditions.jsx";
-import PrivacyPolicy from "./components/PrivacyPolicy";
-import CookiesPolicy from "./components/CookiesPolicy";
+import TermsAndConditions from "./components/footer/TermsAndConditions.jsx";
+import PrivacyPolicy from "./components/footer/PrivacyPolicy.jsx";
+import CookiesPolicy from "./components/footer/CookiesPolicy.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
