@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import { PDFDocument } from "pdf-lib";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
-import Footer from "../components/footer/Footer";
+import Footer from "../footer/Footer.jsx";
+import Navbar from "../navbar/Navbar.jsx";
 
 export default function SplitPDF() {
 
@@ -104,58 +105,7 @@ export default function SplitPDF() {
   return (
     <div className="min-h-screen bg-gray-100 text-black flex flex-col">
 
-      {/* NAVBAR */}
-      <header className="fixed top-0 left-0 w-full h-16 bg-white border-b shadow-sm z-50">
-
-        <div className="relative w-full h-full flex items-center px-6">
-
-          {/* LEFT LOGO */}
-          <Link
-            to="/"
-            className="flex items-center gap-2 text-lg font-semibold"
-          >
-            <img
-              src="/logo.ico"
-              alt="Dr. Docs"
-              className="w-8 h-8 object-contain"
-            />
-
-            <span className="hover:opacity-80 transition">
-              Dr. Docs
-            </span>
-          </Link>
-
-          {/* CENTER NAV */}
-          <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 gap-3 text-sm">
-
-            <Link
-              to="/merge"
-              className="px-4 py-2 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-black font-medium transition-all duration-300"
-            >
-              Merge
-            </Link>
-
-            {/* ACTIVE */}
-            <Link
-              to="/split"
-              className="px-4 py-2 rounded-xl bg-black text-white font-medium shadow-sm"
-            >
-              Split
-            </Link>
-
-            <button className="px-4 py-2 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-black font-medium transition-all duration-300">
-              Compress
-            </button>
-
-            <button className="px-4 py-2 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-black font-medium transition-all duration-300">
-              Reorder
-            </button>
-
-          </div>
-
-        </div>
-
-      </header>
+      <Navbar active="Split" />
 
       {/* BODY */}
       <div className="flex-1 flex flex-col items-center justify-center px-6 pt-28">
@@ -173,7 +123,7 @@ export default function SplitPDF() {
           disabled={!file || !pageInput || loading}
           className="px-8 py-3 rounded-2xl mb-4 bg-black text-white font-medium shadow-lg disabled:opacity-40 hover:scale-105 transition-all duration-300"
         >
-          {loading ? "Splitting PDF..." : "Split & Download ZIP"}
+          {loading ? "Splitting PDF..." : "Split & Download"}
         </button>
 
         {/* UPLOAD */}
@@ -222,7 +172,7 @@ export default function SplitPDF() {
             className="w-full px-5 py-4 rounded-2xl border bg-white outline-none focus:ring-2 focus:ring-black shadow-sm"
           />
 
-          <p className="text-xs text-gray-500 mt-2">
+          <p className="text-xs text-center text-gray-500 mt-2">
             Enter pages or ranges separated by commas.
           </p>
 

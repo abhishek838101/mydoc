@@ -1,9 +1,10 @@
 import { useState } from "react";
-import FilePreview from "./FilePreview.jsx";
+import FilePreview from "../FilePreview.jsx";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { Link } from "react-router-dom";
-import Footer from "../components/footer/Footer";
+import Footer from "../footer/Footer.jsx";
+import Navbar from "../navbar/Navbar.jsx";
 
 function App() {
   const [files, setFiles] = useState([]);
@@ -93,95 +94,7 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-100 text-black flex flex-col">
 
-      {/* HEADER */}
-      <header className="fixed top-0 left-0 w-full h-16 bg-white border-b shadow-sm z-50">
-
-        <div className="relative w-full h-full flex items-center px-6">
-
-          {/* LEFT LOGO */}
-          <Link
-            to="/"
-            className="flex items-center gap-2 text-lg font-semibold"
-          >
-            <img
-              src="/logo.ico"
-              alt="Dr. Docs"
-              className="w-8 h-8 object-contain"
-            />
-
-            <span className="hover:opacity-80 transition">
-              Dr. Docs
-            </span>
-          </Link>
-
-          {/* CENTER NAV (DESKTOP ONLY) */}
-          <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 gap-3 text-sm">
-
-            {/* ACTIVE */}
-            <Link
-              to="/merge"
-              className="px-4 py-2 rounded-xl bg-black text-white font-medium shadow-sm"
-            >
-              Merge
-            </Link>
-
-            {/* INACTIVE */}
-            <Link
-              to="/split"
-              className="px-4 py-2 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-black font-medium transition-all duration-300"
-            >
-              Split
-            </Link>
-
-            <button className="px-4 py-2 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-black font-medium transition-all duration-300">
-              Compress
-            </button>
-
-            <button className="px-4 py-2 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-black font-medium transition-all duration-300">
-              Reorder
-            </button>
-
-          </div>        
-
-          {/* MOBILE MENU */}
-          <div className="ml-auto md:hidden relative">
-
-            {/* MENU BUTTON */}
-            <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="px-3 py-2 border rounded-lg text-sm"
-            >
-              {menuOpen ? "✕" : "☰ Menu"}
-            </button>
-
-            {/* DROPDOWN */}
-            {menuOpen && (
-              <div className="absolute right-0 mt-2 w-44 bg-white border rounded-xl shadow-lg overflow-hidden">
-
-                {/* <button className="block w-full text-left px-4 py-3 hover:bg-gray-100 text-sm font-medium text-black">
-                  Merge
-                </button> */}
-
-                <button className="block w-full text-left px-4 py-3 text-sm hover:bg-gray-100">
-                  Split
-                </button>
-
-                <button className="block w-full text-left px-4 py-3 text-sm hover:bg-gray-100">
-                  Compress
-                </button>
-
-                <button className="block w-full text-left px-4 py-3 text-sm hover:bg-gray-100">
-                  Reorder
-                </button>
-
-              </div>
-            )}
-
-          </div>
-
-        </div>
-
-      </header>
+      <Navbar active="Merge" />
 
       {/* BODY */}
       <div className="flex-1 mt-16 overflow-y-auto">

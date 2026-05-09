@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-
 export default function CookiesPolicy() {
   return (
     <div className="h-screen bg-white text-gray-900 overflow-hidden relative">
@@ -135,7 +134,6 @@ export default function CookiesPolicy() {
             </section>
 
           </div>
-
           {/* FOOTER */}
           <div className="text-center mt-16 pt-8 border-t border-gray-200">
             <p className="text-sm text-gray-500">

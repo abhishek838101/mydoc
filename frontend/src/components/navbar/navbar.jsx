@@ -14,14 +14,14 @@ export default function Navbar({ active }) {
       name: "Split",
       path: "/split",
     },
-    {
-      name: "Compress",
-      path: "/compress",
-    },
-    {
-      name: "Reorder",
-      path: "/reorder",
-    },
+    // {
+    //   name: "Compress",
+    //   path: "/compress",
+    // },
+    // {
+    //   name: "Reorder",
+    //   path: "/reorder",
+    // },
   ];
 
   return (
