@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import { PDFDocument } from "pdf-lib";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
-import Footer from "../footer/Footer.jsx";
-import Navbar from "../navbar/Navbar.jsx";
+import Footer from "../footer/footer.jsx";
+import Navbar from "../navbar/navbar.jsx";
 
 export default function SplitPDF() {
 
