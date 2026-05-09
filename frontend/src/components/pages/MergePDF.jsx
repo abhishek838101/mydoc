@@ -14,55 +14,103 @@ function App() {
 
   const [loading, setLoading] = useState(false);
 
-  const [passwords, setPasswords] = useState([]);
+  // 🔥 PASSWORD MODAL
+  const [showPasswordModal, setShowPasswordModal] =
+    useState(false);
 
-  // 🔥 PASSWORD MODAL STATES
-  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [passwordInput, setPasswordInput] =
+    useState("");
 
-  const [passwordInput, setPasswordInput] = useState("");
-
-  const [currentProtectedFile, setCurrentProtectedFile] = useState(null);
+  const [currentProtectedFile, setCurrentProtectedFile] =
+    useState(null);
 
   // 🔥 SUBMIT PASSWORD
   const submitPassword = async () => {
 
     if (!passwordInput) return;
 
-    const updated = [...passwords];
+    try {
 
-    updated[currentProtectedFile.index] = passwordInput;
+      // 🔥 VERIFY PASSWORD FIRST
+      await axios.post(
+        "http://localhost:5000/merge",
+        (() => {
+          const testForm = new FormData();
 
-    setPasswords(updated);
+          testForm.append(
+            "files",
+            files[currentProtectedFile.index].file
+          );
 
-    setShowPasswordModal(false);
+          testForm.append(
+            "rotations",
+            JSON.stringify([0])
+          );
 
-    setPasswordInput("");
+          testForm.append(
+            "passwords",
+            JSON.stringify([passwordInput])
+          );
 
-    await mergePDFs(updated);
+          return testForm;
+        })(),
+        {
+          responseType: "blob",
+        }
+      );
+
+      // ✅ PASSWORD CORRECT
+      const updatedFiles = [...files];
+
+      updatedFiles[currentProtectedFile.index].password =
+        passwordInput;
+
+      setFiles(updatedFiles);
+
+      setShowPasswordModal(false);
+
+      setPasswordInput("");
+
+      // 🔥 RETRY MERGE
+      setTimeout(() => {
+        mergePDFs(updatedFiles);
+      }, 100);
+
+    } catch (err) {
+
+      toast.error("Wrong password");
+
+    }
   };
 
   // 🔥 MERGE PDFs
-  const mergePDFs = async (customPasswords = passwords) => {
+  const mergePDFs = async (customFiles = files) => {
 
-    if (files.length < 2) {
+    if (customFiles.length < 2) {
       toast.error("Upload at least 2 PDFs");
       return;
     }
 
     const formData = new FormData();
 
-    files.forEach((f) => {
+    customFiles.forEach((f) => {
       formData.append("files", f.file);
     });
 
+    // 🔥 ROTATIONS
     formData.append(
       "rotations",
-      JSON.stringify(files.map((f) => f.rotation || 0))
+      JSON.stringify(
+        customFiles.map((f) => f.rotation || 0)
+      )
     );
 
+    // 🔥 PASSWORDS
     formData.append(
       "passwords",
-      JSON.stringify(customPasswords)
+      JSON.stringify(
+        customFiles.map((f) => f.password || "")
+      )
     );
 
     try {
@@ -106,8 +154,6 @@ function App() {
 
       setFiles([]);
 
-      setPasswords([]);
-
       setProgress(0);
 
     } catch (err) {
@@ -116,7 +162,8 @@ function App() {
 
         if (err.response && err.response.data) {
 
-          const text = await err.response.data.text();
+          const text =
+            await err.response.data.text();
 
           const data = JSON.parse(text);
 
@@ -136,7 +183,9 @@ function App() {
           }
         }
 
-      } catch (e) {}
+      } catch (e) {
+        console.log(e);
+      }
 
       toast.error("Error merging PDFs");
 
@@ -212,6 +261,7 @@ function App() {
             <FilePreview
               files={files}
               setFiles={setFiles}
+              mergePDFs={mergePDFs}
             />
 
           </div>
