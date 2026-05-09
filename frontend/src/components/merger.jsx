@@ -3,6 +3,7 @@ import FilePreview from "./FilePreview.jsx";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { Link } from "react-router-dom";
+import Footer from "../components/footer/Footer";
 
 function App() {
   const [files, setFiles] = useState([]);
@@ -93,7 +94,6 @@ function App() {
     <div className="min-h-screen bg-gray-100 text-black flex flex-col">
 
       {/* HEADER */}
-      {/* NAVBAR */}
       <header className="fixed top-0 left-0 w-full h-16 bg-white border-b shadow-sm z-50">
 
         <div className="relative w-full h-full flex items-center px-6">
@@ -115,25 +115,33 @@ function App() {
           </Link>
 
           {/* CENTER NAV (DESKTOP ONLY) */}
-          <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 gap-8 text-sm text-gray-600">
+          <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 gap-3 text-sm">
 
-            {/* <button className="hover:text-black font-medium transition text-black">
+            {/* ACTIVE */}
+            <Link
+              to="/merge"
+              className="px-4 py-2 rounded-xl bg-black text-white font-medium shadow-sm"
+            >
               Merge
-            </button> */}
+            </Link>
 
-            <button className="hover:text-black font-medium transition">
+            {/* INACTIVE */}
+            <Link
+              to="/split"
+              className="px-4 py-2 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-black font-medium transition-all duration-300"
+            >
               Split
-            </button>
+            </Link>
 
-            <button className="hover:text-black font-medium transition">
+            <button className="px-4 py-2 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-black font-medium transition-all duration-300">
               Compress
             </button>
 
-            <button className="hover:text-black font-medium transition">
+            <button className="px-4 py-2 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-black font-medium transition-all duration-300">
               Reorder
             </button>
 
-          </div>         
+          </div>        
 
           {/* MOBILE MENU */}
           <div className="ml-auto md:hidden relative">
@@ -225,73 +233,11 @@ function App() {
 
           </div>
 
-          {/* FOOTER */}
-          <footer className="mt-auto w-full border-t bg-white px-6 py-3 flex flex-col md:flex-row justify-between items-center gap-5 text-gray-500 text-xs">
-
-            {/* LEFT */}
-            <p>© 2026 Dr. Docs. All rights reserved.</p>
-
-            {/* CENTER */}
-            <div className="flex items-center gap-4 flex-wrap justify-center">
-
-              <a
-                href="https://github.com/abhishek838101"
-                target="_blank"
-                rel="noreferrer"
-                className="text-gray-500 hover:text-black transition flex items-center gap-1"
-              >
-                Made with
-                <span className="text-red-500 text-sm">❤️</span>
-                by
-                <span className="font-semibold text-gray-700">
-                  Abhishek Varshney
-                </span>
-              </a>
-
-              <span className="hidden md:block text-gray-300">|</span>
-
-              <a
-                href="https://buymeacoffee.com/"
-                target="_blank"
-                rel="noreferrer"
-                className="px-4 py-2 rounded-full bg-yellow-400 hover:bg-yellow-300 text-black font-medium transition-all duration-300 shadow-sm hover:scale-105"
-              >
-                ☕ Buy Me a Coffee
-              </a>
-
-            </div>
-
-            {/* RIGHT */}
-            <div className="flex flex-wrap justify-center gap-4">
-
-              <Link
-                to="/terms"
-                className="hover:text-black transition"
-              >
-                Terms & Conditions
-              </Link>
-
-              <Link
-                to="/privacy"
-                className="hover:text-black transition"
-              >
-                Privacy Policy
-              </Link>
-
-              <Link
-                to="/cookies"
-                className="hover:text-black transition"
-              >
-                Cookies
-              </Link>
-
-            </div>
-
-          </footer>
-
         </div>
 
       </div>
+
+      <Footer />
 
     </div>
   );

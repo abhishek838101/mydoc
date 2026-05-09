@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import Footer from "./components/footer/footer.jsx";
 
 export default function App() {const [menuOpen, setMenuOpen] = useState(false);
   return (
@@ -27,14 +28,29 @@ export default function App() {const [menuOpen, setMenuOpen] = useState(false);
           </Link>
 
           {/* CENTER NAV (DESKTOP ONLY) */}
-          <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 gap-8 text-sm text-gray-600">
-            <Link to="/merge" className="hover:text-black font-medium transition">
+          <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 gap-3 text-sm">
+
+            {/* ACTIVE */}
+            <Link
+              to="/merge"
+              className="px-4 py-2 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-black font-medium transition-all duration-300"
+            >
               Merge
             </Link>
 
-            <button className="text-gray-400 cursor-not-allowed">Split</button>
-            <button className="text-gray-400 cursor-not-allowed">Compress</button>
-            <button className="text-gray-400 cursor-not-allowed">Reorder</button>
+            {/* INACTIVE */}
+            <Link to="/split" className="px-4 py-2 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-black font-medium transition-all duration-300">
+              Split
+            </Link>
+
+            <button className="px-4 py-2 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-black font-medium transition-all duration-300">
+              Compress
+            </button>
+
+            <button className="px-4 py-2 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-black font-medium transition-all duration-300">
+              Reorder
+            </button>
+
           </div>
 
           {/* MOBILE MENU */}
@@ -52,7 +68,9 @@ export default function App() {const [menuOpen, setMenuOpen] = useState(false);
             {menuOpen && (
               <div className="absolute right-0 mt-2 w-44 bg-white border rounded-xl shadow-lg overflow-hidden">
 
-                <Link to="/merge" className="block px-4 py-2 hover:bg-gray-100 text-sm" > Merge </Link>
+                <Link to="/" className="block w-full text-left px-4 py-3 hover:bg-gray-100 text-sm font-medium text-black">
+                  Merge
+                </Link>
 
                 <button className="block w-full text-left px-4 py-3 text-sm hover:bg-gray-100">
                   Split
@@ -123,69 +141,7 @@ export default function App() {const [menuOpen, setMenuOpen] = useState(false);
 
       </section>
 
-      {/* FOOTER */}
-      <footer className="mt-auto w-full border-t bg-white px-6 py-3 flex flex-col md:flex-row justify-between items-center gap-5 text-gray-500 text-xs">
-
-        {/* LEFT */}
-        <p>© 2026 Dr. Docs. All rights reserved.</p>
-
-        {/* CENTER */}
-        <div className="flex items-center gap-4 flex-wrap justify-center">
-
-          <a
-            href="https://github.com/abhishek838101"
-            target="_blank"
-            rel="noreferrer"
-            className="text-gray-500 hover:text-black transition flex items-center gap-1"
-          >
-            Made with
-            <span className="text-red-500 text-sm">❤️</span>
-            by
-            <span className="font-semibold text-gray-700">
-              Abhishek Varshney
-            </span>
-          </a>
-
-          <span className="hidden md:block text-gray-300">|</span>
-
-          <a
-            href="https://buymeacoffee.com/"
-            target="_blank"
-            rel="noreferrer"
-            className="px-4 py-2 rounded-full bg-yellow-400 hover:bg-yellow-300 text-black font-medium transition-all duration-300 shadow-sm hover:scale-105"
-          >
-            ☕ Buy Me a Coffee
-          </a>
-
-        </div>
-
-        {/* RIGHT */}
-        <div className="flex flex-wrap justify-center gap-4">
-
-          <Link
-            to="/terms"
-            className="hover:text-black transition"
-          >
-            Terms & Conditions
-          </Link>
-
-          <Link
-            to="/privacy"
-            className="hover:text-black transition"
-          >
-            Privacy Policy
-          </Link>
-
-          <Link
-            to="/cookies"
-            className="hover:text-black transition"
-          >
-            Cookies
-          </Link>
-
-        </div>
-
-      </footer>
+      <Footer />
 
     </div>
   );

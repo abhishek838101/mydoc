@@ -10,6 +10,7 @@ import "./index.css";
 
 import App from "./App";
 import PdfMerger from "./components/merger.jsx";
+import SplitPDF from "./components/SplitPDF";
 import TermsAndConditions from "./components/footer/TermsAndConditions.jsx";
 import PrivacyPolicy from "./components/footer/PrivacyPolicy.jsx";
 import CookiesPolicy from "./components/footer/CookiesPolicy.jsx";
@@ -40,6 +41,8 @@ createRoot(document.getElementById("root")).render(
           path="/merge"
           element={<PdfMerger />}
         />
+
+        <Route path="/split" element={<SplitPDF />} />
       </Routes>
 
     </BrowserRouter>
