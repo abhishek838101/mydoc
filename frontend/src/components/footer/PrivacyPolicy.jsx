@@ -7,9 +7,10 @@ export default function PrivacyPolicy() {
       {/* FIXED BACK BUTTON */}
       <Link
         to="/"
-        className="fixed top-6 left-6 z-50 bg-black text-white px-5 py-3 rounded-full shadow-lg hover:bg-gray-800 transition-all duration-300"
+        className="fixed top-6 right-6 z-50 bg-black text-white px-5 py-3 rounded-full shadow-lg hover:bg-gray-800 transition-all duration-300"
       >
-        ← Back to Home
+        <span className="hidden sm:inline">← Back to Home</span>
+        <span className="sm:hidden">←</span>
       </Link>
 
       {/* SCROLLABLE CONTENT */}
@@ -39,11 +40,6 @@ export default function PrivacyPolicy() {
                 1. Information Collection
               </h2>
 
-              <p className="text-gray-600 leading-7 text-sm">
-                Dr.Docs may collect limited technical and usage data
-                necessary for improving platform performance,
-                maintaining security, and enhancing user experience.
-              </p>
             </section>
 
             <section className="pb-10 border-b border-gray-200">

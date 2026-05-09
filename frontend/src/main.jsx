@@ -8,7 +8,8 @@ import {
 
 import "./index.css";
 
-import App from "./App.jsx";
+import App from "./App";
+import PdfMerger from "./components/merger.jsx";
 import TermsAndConditions from "./components/footer/TermsAndConditions.jsx";
 import PrivacyPolicy from "./components/footer/PrivacyPolicy.jsx";
 import CookiesPolicy from "./components/footer/CookiesPolicy.jsx";
@@ -33,6 +34,11 @@ createRoot(document.getElementById("root")).render(
         <Route
           path="/cookies"
           element={<CookiesPolicy />}
+        />
+
+        <Route
+          path="/merge"
+          element={<PdfMerger />}
         />
       </Routes>
 

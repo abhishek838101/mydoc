@@ -7,9 +7,10 @@ export default function TermsAndConditions() {
       {/* FIXED BACK BUTTON */}
       <Link
         to="/"
-        className="fixed top-6 left-6 z-50 bg-black text-white px-5 py-3 rounded-full shadow-lg hover:bg-gray-800 transition-all duration-300"
+        className="fixed top-6 right-6 z-50 bg-black text-white px-5 py-3 rounded-full shadow-lg hover:bg-gray-800 transition-all duration-300"
       >
-        ← Back to Home
+        <span className="hidden sm:inline">← Back to Home</span>
+        <span className="sm:hidden">←</span>
       </Link>
 
       {/* SCROLLABLE CONTENT */}

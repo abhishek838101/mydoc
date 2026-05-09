@@ -7,9 +7,10 @@ export default function CookiesPolicy() {
       {/* FIXED BACK BUTTON */}
       <Link
         to="/"
-        className="fixed top-6 left-6 z-50 bg-black text-white px-5 py-3 rounded-full shadow-lg hover:bg-gray-800 transition-all duration-300"
+        className="fixed top-6 right-6 z-50 bg-black text-white px-5 py-3 rounded-full shadow-lg hover:bg-gray-800 transition-all duration-300"
       >
-        ← Back Home
+        <span className="hidden sm:inline">← Back to Home</span>
+        <span className="sm:hidden">←</span>
       </Link>
 
       {/* SCROLLABLE CONTENT */}
@@ -24,16 +25,16 @@ export default function CookiesPolicy() {
               Cookies Policy
             </h1>
 
+          </div>
+
+          {/* CONTENT */}
+          <div className="space-y-12">
+
             <p className="text-gray-600 leading-7 max-w-3xl text-sm">
               This Cookies Policy explains how Dr.Docs uses cookies,
               tracking technologies, and related tools to improve
               website functionality and user experience.
             </p>
-
-          </div>
-
-          {/* CONTENT */}
-          <div className="space-y-12">
 
             <section className="pb-10 border-b border-gray-200">
               <h2 className="text-lg font-semibold mb-3">

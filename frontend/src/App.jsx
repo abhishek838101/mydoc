@@ -1,244 +1,192 @@
-import { useState } from "react";
-import FilePreview from "./components/FilePreview";
-import axios from "axios";
-import toast, { Toaster } from "react-hot-toast";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
-function App() {
-  const [files, setFiles] = useState([]);
-  const [progress, setProgress] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [passwords, setPasswords] = useState([]);
-
-  const mergePDFs = async () => {
-    if (files.length < 2) {
-      toast.error("Upload at least 2 PDFs");
-      return;
-    }
-
-    const formData = new FormData();
-
-    files.forEach((f) => {
-      formData.append("files", f.file);
-    });
-
-    formData.append(
-      "rotations",
-      JSON.stringify(files.map((f) => f.rotation || 0))
-    );
-
-    formData.append("passwords", JSON.stringify(passwords));
-
-    try {
-      setLoading(true);
-
-      const res = await axios.post(
-        "http://localhost:5000/merge",
-        formData,
-        {
-          responseType: "blob",
-          onUploadProgress: (e) => {
-            if (e.total) {
-              setProgress(Math.round((e.loaded * 100) / e.total));
-            }
-          },
-        }
-      );
-
-      // DOWNLOAD PDF
-      const url = window.URL.createObjectURL(new Blob([res.data]));
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "merged.pdf";
-      a.click();
-
-      toast.success("Merged!");
-      setFiles([]);
-      setPasswords([]);
-      setProgress(0);
-
-    } catch (err) {
-      try {
-        if (err.response && err.response.data) {
-          const text = await err.response.data.text();
-          const data = JSON.parse(text);
-
-          if (data.type === "PASSWORD_REQUIRED") {
-            const pass = prompt(`Enter password for ${data.fileName}`);
-
-            if (!pass) {
-              setLoading(false);
-              return;
-            }
-
-            const updated = [...passwords];
-            updated[data.fileIndex] = pass;
-            setPasswords(updated);
-
-            setLoading(false);
-
-            return mergePDFs();
-          }
-        }
-      } catch (e) {}
-
-      toast.error("Error merging");
-    } finally {
-      setLoading(false);
-    }
-  };
-
+export default function App() {const [menuOpen, setMenuOpen] = useState(false);
   return (
     <div className="min-h-screen bg-gray-100 text-black flex flex-col">
 
-      {/* HEADER */}
+      {/* NAVBAR */}
       <header className="fixed top-0 left-0 w-full h-16 bg-white border-b shadow-sm z-50">
-        <div className="w-full flex items-center justify-between px-4 py-3">
 
-          {/* LEFT */}
-          <h1 className="text-lg font-semibold">
-            📋 Dr. Docs
-          </h1>
+        <div className="relative w-full h-full flex items-center px-6">
 
-          {/* CENTER */}
-          <div className="flex gap-6 ml-10 text-sm text-gray-600">
-            <button className="hover:text-black font-medium">
+          {/* LEFT LOGO */}
+          <Link
+            to="/"
+            className="flex items-center gap-2 text-lg font-semibold"
+          >
+            <img
+              src="/logo.ico"
+              alt="Dr. Docs"
+              className="w-8 h-8 object-contain"
+            />
+
+            <span className="hover:opacity-80 transition">
+              Dr. Docs
+            </span>
+          </Link>
+
+          {/* CENTER NAV (DESKTOP ONLY) */}
+          <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 gap-8 text-sm text-gray-600">
+            <Link to="/merge" className="hover:text-black font-medium transition">
               Merge
-            </button>
+            </Link>
 
-            <button className="hover:text-black font-medium">
-              Split
-            </button>
-
-            <button className="hover:text-black font-medium">
-              Compress
-            </button>
-
-            <button className="hover:text-black font-medium">
-              Reorder
-            </button>
+            <button className="text-gray-400 cursor-not-allowed">Split</button>
+            <button className="text-gray-400 cursor-not-allowed">Compress</button>
+            <button className="text-gray-400 cursor-not-allowed">Reorder</button>
           </div>
 
-          {/* RIGHT */}
-          <button
-            onClick={mergePDFs}
-            disabled={files.length < 2 || loading}
-            className="relative overflow-hidden px-4 py-2 rounded text-white bg-blue-600 disabled:opacity-40"
-          >
+          {/* MOBILE MENU */}
+          <div className="ml-auto md:hidden relative">
 
-            {/* PROGRESS */}
-            {loading && (
-              <span
-                className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-700 via-blue-500 to-blue-700 opacity-80 transition-all duration-300"
-                style={{ width: `${progress}%` }}
-              />
+            {/* MENU BUTTON */}
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="px-3 py-2 border rounded-lg text-sm"
+            >
+              {menuOpen ? "✕" : "☰ Menu"}
+            </button>
+
+            {/* DROPDOWN */}
+            {menuOpen && (
+              <div className="absolute right-0 mt-2 w-44 bg-white border rounded-xl shadow-lg overflow-hidden">
+
+                <Link to="/merge" className="block px-4 py-2 hover:bg-gray-100 text-sm" > Merge </Link>
+
+                <button className="block w-full text-left px-4 py-3 text-sm hover:bg-gray-100">
+                  Split
+                </button>
+
+                <button className="block w-full text-left px-4 py-3 text-sm hover:bg-gray-100">
+                  Compress
+                </button>
+
+                <button className="block w-full text-left px-4 py-3 text-sm hover:bg-gray-100">
+                  Reorder
+                </button>
+
+              </div>
             )}
 
-            <span className="relative z-10">
-              {loading ? "Merging PDFs..." : "Merge PDFs"}
-            </span>
-
-          </button>
+          </div>
 
         </div>
+
       </header>
 
-      {/* BODY */}
-      <div className="flex-1 mt-16 overflow-y-auto">
+      {/* HERO */}
+      <section className="flex-1 flex items-center justify-center px-6 pt-24">
 
-        <div className="min-h-[calc(100vh-64px)] flex flex-col">
+        <div className="max-w-6xl text-center">
 
-          {/* CONTENT */}
-          <div className="p-6">
+          <div className="inline-block px-4 py-2 rounded-full bg-blue-100 text-blue-700 text-sm font-medium mb-6">
+            Modern Document Management Platform
+          </div>
 
-            <Toaster />
+          <h1 className="text-5xl md:text-7xl font-bold leading-tight mb-6">
 
-            <h1 className="text-3xl font-bold mb-6 text-center">
-              PDF Merger 🚀
-            </h1>
+            Powerful Tools
+            <br />
 
-            {/* EMPTY */}
-            {files.length === 0 && (
-              <p className="text-center text-gray-500 mt-6">
-                No files uploaded yet
-              </p>
-            )}
+            For Every Document
 
-            {/* FILE GRID */}
-            <FilePreview files={files} setFiles={setFiles} />
+          </h1>
+
+          <p className="text-gray-600 text-lg leading-8 max-w-3xl mx-auto mb-12">
+
+            Dr. Docs provides modern tools to merge, split, compress,
+            convert, organize, and manage documents effortlessly.
+            Built for PDFs, Word files, images, presentations,
+            spreadsheets, and more — all in one clean platform.
+
+          </p>
+
+          {/* BUTTONS */}
+          <div className="flex justify-center gap-4 flex-wrap mb-16">
+
+            <button
+              className="px-8 py-4 rounded-2xl bg-black text-white hover:bg-gray-800 transition-all duration-300 text-lg font-medium shadow-lg"
+            >
+              Open PDF Tools
+            </button>
+
+            <button
+              className="px-8 py-4 rounded-2xl border border-gray-300 bg-white hover:bg-gray-100 transition-all duration-300 text-lg font-medium"
+            >
+              Explore Features
+            </button>
 
           </div>
 
-          {/* FOOTER */}
-          <footer className="mt-auto w-full border-t bg-white px-6 py-3 flex flex-col md:flex-row justify-between items-center gap-5 text-gray-500 text-xs">
+        </div>
 
-            {/* LEFT */}
-            <p>© 2026 Dr. Docs. All rights reserved.</p>
+      </section>
 
-            {/* CENTER */}
-            <div className="flex items-center gap-4 flex-wrap justify-center">
+      {/* FOOTER */}
+      <footer className="mt-auto w-full border-t bg-white px-6 py-3 flex flex-col md:flex-row justify-between items-center gap-5 text-gray-500 text-xs">
 
-              <a
-                href="https://github.com/abhishek838101"
-                target="_blank"
-                rel="noreferrer"
-                className="text-gray-500 hover:text-black transition flex items-center gap-1"
-              >
-                Made with
-                <span className="text-red-500 text-sm">❤️</span>
-                by
-                <span className="font-semibold text-gray-700">
-                  Abhishek Varshney
-                </span>
-              </a>
+        {/* LEFT */}
+        <p>© 2026 Dr. Docs. All rights reserved.</p>
 
-              <span className="hidden md:block text-gray-300">|</span>
+        {/* CENTER */}
+        <div className="flex items-center gap-4 flex-wrap justify-center">
 
-              <a
-                href="https://buymeacoffee.com/"
-                target="_blank"
-                rel="noreferrer"
-                className="px-4 py-2 rounded-full bg-yellow-400 hover:bg-yellow-300 text-black font-medium transition-all duration-300 shadow-sm hover:scale-105"
-              >
-                ☕ Buy Me a Coffee
-              </a>
+          <a
+            href="https://github.com/abhishek838101"
+            target="_blank"
+            rel="noreferrer"
+            className="text-gray-500 hover:text-black transition flex items-center gap-1"
+          >
+            Made with
+            <span className="text-red-500 text-sm">❤️</span>
+            by
+            <span className="font-semibold text-gray-700">
+              Abhishek Varshney
+            </span>
+          </a>
 
-            </div>
+          <span className="hidden md:block text-gray-300">|</span>
 
-            {/* RIGHT */}
-            <div className="flex flex-wrap justify-center gap-4">
-
-              <Link
-                to="/terms"
-                className="hover:text-black transition"
-              >
-                Terms & Conditions
-              </Link>
-
-              <Link
-                to="/privacy"
-                className="hover:text-black transition"
-              >
-                Privacy Policy
-              </Link>
-
-              <Link
-                to="/cookies"
-                className="hover:text-black transition"
-              >
-                Cookies
-              </Link>
-
-            </div>
-
-          </footer>
+          <a
+            href="https://buymeacoffee.com/"
+            target="_blank"
+            rel="noreferrer"
+            className="px-4 py-2 rounded-full bg-yellow-400 hover:bg-yellow-300 text-black font-medium transition-all duration-300 shadow-sm hover:scale-105"
+          >
+            ☕ Buy Me a Coffee
+          </a>
 
         </div>
 
-      </div>
+        {/* RIGHT */}
+        <div className="flex flex-wrap justify-center gap-4">
+
+          <Link
+            to="/terms"
+            className="hover:text-black transition"
+          >
+            Terms & Conditions
+          </Link>
+
+          <Link
+            to="/privacy"
+            className="hover:text-black transition"
+          >
+            Privacy Policy
+          </Link>
+
+          <Link
+            to="/cookies"
+            className="hover:text-black transition"
+          >
+            Cookies
+          </Link>
+
+        </div>
+
+      </footer>
 
     </div>
   );
 }
-
-export default App;
