@@ -14,6 +14,7 @@ import SplitPDF from "./components/pages/SplitPDF.jsx";
 import TermsAndConditions from "./components/footer/TermsAndConditions.jsx";
 import PrivacyPolicy from "./components/footer/PrivacyPolicy.jsx";
 import CookiesPolicy from "./components/footer/CookiesPolicy.jsx";
+import UnlockPdf from "./components/pages/UnlockPdf.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -49,6 +50,8 @@ createRoot(document.getElementById("root")).render(
           path="*split" 
           element={<SplitPDF />}
         />
+
+        <Route path="/unlock" element={<UnlockPdf />} />
       </Routes>
 
     </BrowserRouter>
