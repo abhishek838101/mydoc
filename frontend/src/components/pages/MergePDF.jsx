@@ -204,65 +204,122 @@ function App() {
       {/* BODY */}
       <div className="flex-1 mt-16">
 
-        <div className="flex flex-col min-h-[calc(100vh-64px)]">
+        <div className="min-h-[calc(100vh-64px)] flex flex-col">
 
-          {/* CONTENT */}
-          <div className="w-full max-w-7xl mx-auto p-6">
+          <div className="flex-1 w-full max-w-[1600px] mx-auto p-6">
 
             <Toaster />
 
-            {/* HEADING */}
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-center">
-              PDF Merger
-            </h1>
+            {/* 🔥 TWO COLUMN LAYOUT */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 h-full">
 
-            <p className="text-center text-gray-600 mb-8 max-w-2xl mx-auto">
-              Merge multiple PDF files into a single document
-              securely and instantly.
-            </p>
+              {/* 🔥 LEFT PANEL */}
+              <div className="lg:col-span-4 bg-white rounded-3xl border border-gray-200 shadow-sm p-8 h-fit sticky top-24">
 
-            {/* MERGE BUTTON */}
-            <div className="flex justify-center mb-10">
+                {/* HEADING */}
+                <h1 className="text-4xl font-bold mb-4">
+                  PDF Merger
+                </h1>
 
-              <button
-                onClick={() => mergePDFs()}
-                disabled={files.length < 2 || loading}
-                className="relative overflow-hidden px-8 py-4 rounded-2xl text-white bg-blue-600 disabled:opacity-40 shadow-xl hover:scale-105 transition-all duration-300"
-              >
+                <p className="text-gray-600 leading-7 mb-8">
+                  Merge multiple PDF files into a single document
+                  securely and instantly.
+                </p>
 
-                {/* PROGRESS */}
-                {loading && (
-                  <span
-                    className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-700 via-blue-500 to-blue-700 opacity-80 transition-all duration-300"
-                    style={{ width: `${progress}%` }}
-                  />
+                {/* LINE */}
+                <div className="w-full h-px bg-gray-200 mb-8" />
+
+                {/* MERGE BUTTON */}
+                <button
+                  onClick={() => mergePDFs()}
+                  disabled={files.length < 2 || loading}
+                  className="relative overflow-hidden w-full px-8 py-4 rounded-2xl text-white bg-blue-600 disabled:opacity-40 shadow-xl hover:scale-[1.02] transition-all duration-300"
+                >
+
+                  {/* PROGRESS */}
+                  {loading && (
+                    <span
+                      className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-700 via-blue-500 to-blue-700 opacity-80 transition-all duration-300"
+                      style={{ width: `${progress}%` }}
+                    />
+                  )}
+
+                  <span className="relative z-10 font-medium text-lg">
+
+                    {loading
+                      ? "Merging PDFs..."
+                      : "Merge PDFs"}
+
+                  </span>
+
+                </button>
+
+                {/* 🔥 PASSWORD STATUS */}
+                <div className="mt-8">
+
+                  <h3 className="font-semibold text-lg mb-3">
+                    Protected PDFs
+                  </h3>
+
+                  <div className="space-y-3">
+
+                    {files.filter((f) => f.password).length === 0 ? (
+
+                      <p className="text-sm text-gray-500">
+                        No unlocked protected PDFs yet.
+                      </p>
+
+                    ) : (
+
+                      files
+                        .filter((f) => f.password)
+                        .map((f, i) => (
+
+                          <div
+                            key={i}
+                            className="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3"
+                          >
+
+                            <p className="text-sm truncate max-w-[180px]">
+                              {f.file.name}
+                            </p>
+
+                            <span className="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full">
+                              Unlocked
+                            </span>
+
+                          </div>
+
+                        ))
+
+                    )}
+
+                  </div>
+
+                </div>
+
+              </div>
+
+              {/* 🔥 RIGHT PANEL */}
+              <div className="lg:col-span-8 bg-white rounded-3xl border border-gray-200 shadow-sm p-6 min-h-[700px]">
+
+                {/* EMPTY */}
+                {files.length === 0 && (
+                  <p className="text-center text-gray-500 mb-10">
+                    No files uploaded yet
+                  </p>
                 )}
 
-                <span className="relative z-10 font-medium text-lg">
+                {/* FILE PREVIEW */}
+                <FilePreview
+                  files={files}
+                  setFiles={setFiles}
+                  mergePDFs={mergePDFs}
+                />
 
-                  {loading
-                    ? "Merging PDFs..."
-                    : "Merge PDFs"}
-
-                </span>
-
-              </button>
+              </div>
 
             </div>
-
-            {/* EMPTY */}
-            {files.length === 0 && (
-              <p className="text-center text-gray-500 mb-10">
-                No files uploaded yet
-              </p>
-            )}
-
-            {/* FILE PREVIEW */}
-            <FilePreview
-              files={files}
-              setFiles={setFiles}
-              mergePDFs={mergePDFs}
-            />
 
           </div>
 

@@ -132,38 +132,59 @@ function SortableItem({
       <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-4 z-20 opacity-0 group-hover:opacity-100 transition-all duration-300">
 
         {!locked && !file.isBlank && (
-          <button
-            type="button"
-            onPointerDown={(e) => e.stopPropagation()}
-            onMouseDown={(e) => e.stopPropagation()}
-            onTouchStart={(e) => e.stopPropagation()}
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              remove(index);
-            }}
-            className="p-2 rounded-full hover:scale-110 transition-all duration-300"
-          >
-            👁
-          </button>
+          <div className="relative group/icon">
+
+            <button
+              type="button"
+              onPointerDown={(e) => e.stopPropagation()}
+              onMouseDown={(e) => e.stopPropagation()}
+              onTouchStart={(e) => e.stopPropagation()}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setPreview(file.preview);
+              }}
+              className="p-2 hover:scale-110 transition-all duration-300"
+            >
+              👁
+            </button>
+
+            <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-white text-[10px] px-2 py-1 rounded-lg opacity-0 group-hover/icon:opacity-100 transition-all duration-200 whitespace-nowrap">
+              Full view
+            </div>
+
+          </div>
         )}
 
         {!file.isBlank && !locked && (
-          <button
-            type="button"
-            onPointerDown={(e) => e.stopPropagation()}
-            onMouseDown={(e) => e.stopPropagation()}
-            onTouchStart={(e) => e.stopPropagation()}
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              remove(index);
-            }}
-            className="p-2 rounded-full hover:scale-110 transition-all duration-300"
-          >
-            🔄
-          </button>
+          <div className="relative group/icon">
+
+            <button
+              type="button"
+              onPointerDown={(e) => e.stopPropagation()}
+              onMouseDown={(e) => e.stopPropagation()}
+              onTouchStart={(e) => e.stopPropagation()}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                rotate(index);
+              }}
+              className="p-2 hover:scale-110 transition-all duration-300"
+            >
+              🔄
+            </button>
+
+            <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-white text-[10px] px-2 py-1 rounded-lg opacity-0 group-hover/icon:opacity-100 transition-all duration-200 whitespace-nowrap">
+              Rotate
+            </div>
+
+          </div>
         )}
+
+      </div>
+
+      {/* 🔥 DELETE BUTTON */}
+      <div className="absolute -top-3 -right-3 z-30 opacity-0 group-hover:opacity-100 transition-all duration-300">
 
         <button
           type="button"
@@ -175,9 +196,9 @@ function SortableItem({
             e.stopPropagation();
             remove(index);
           }}
-          className="p-2 rounded-full hover:scale-110 transition-all duration-300"
+          className="w-8 h-8 rounded-full bg-black text-white text-sm flex items-center justify-center shadow-lg hover:scale-110 transition-all duration-300"
         >
-          🗑
+          ✕
         </button>
 
       </div>
