@@ -121,113 +121,158 @@ function SortableItem({
   }, [file.preview, file.password, file.isBlank]);
 
   return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className="group bg-white border rounded-2xl p-3 shadow-sm hover:shadow-lg transition w-full max-w-[180px]"
-    >
+    <div className="relative w-full max-w-[180px] group">
 
-      {/* DRAG */}
+      {/* 🔥 FILE NUMBER */}
+      <div className="absolute top-2 left-2 z-20 bg-black text-white text-xs font-semibold px-2 py-1 rounded-full shadow-lg">
+        {index + 1}
+      </div>
+
+      {/* 🔥 ACTIONS */}
+      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-4 z-20 opacity-0 group-hover:opacity-100 transition-all duration-300">
+
+        {!locked && !file.isBlank && (
+          <button
+            type="button"
+            onPointerDown={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
+            onTouchStart={(e) => e.stopPropagation()}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              remove(index);
+            }}
+            className="p-2 rounded-full hover:scale-110 transition-all duration-300"
+          >
+            👁
+          </button>
+        )}
+
+        {!file.isBlank && !locked && (
+          <button
+            type="button"
+            onPointerDown={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
+            onTouchStart={(e) => e.stopPropagation()}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              remove(index);
+            }}
+            className="p-2 rounded-full hover:scale-110 transition-all duration-300"
+          >
+            🔄
+          </button>
+        )}
+
+        <button
+          type="button"
+          onPointerDown={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+          onTouchStart={(e) => e.stopPropagation()}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            remove(index);
+          }}
+          className="p-2 rounded-full hover:scale-110 transition-all duration-300"
+        >
+          🗑
+        </button>
+
+      </div>
+
+      {/* 🔥 DRAGGABLE AREA */}
       <div
+        ref={setNodeRef}
+        style={style}
         {...attributes}
         {...listeners}
-        className="cursor-grab text-xs text-gray-400 mb-2 text-center"
+        className="group cursor-grab active:cursor-grabbing"
       >
-        ⠿ Drag
-      </div>
 
-      {/* PREVIEW */}
-      <div className="relative h-52 w-full bg-gray-100 flex items-center justify-center rounded-lg overflow-hidden">
+        {/* PDF PREVIEW */}
+        <div className="relative h-60 w-full bg-white rounded-2xl border-2 border-gray-200 hover:border-black transition-all duration-300 shadow-sm hover:shadow-xl p-2 overflow-hidden">
 
-        {/* 🔐 LOCKED */}
-        {locked ? (
+          {/* 🔐 LOCKED */}
+          {locked ? (
 
-          <div className="flex flex-col items-center justify-center text-center px-4">
+            <div className="flex flex-col items-center justify-center text-center px-4 h-full">
 
-            <div className="text-4xl mb-2">
-              🔒
+              <div className="text-5xl mb-3">
+                🔒
+              </div>
+
+              <p className="text-sm text-gray-500 mb-4">
+                Password Protected
+              </p>
+
+              <button
+                type="button"
+                onPointerDown={(e) => e.stopPropagation()}
+                onMouseDown={(e) => e.stopPropagation()}
+                onTouchStart={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  openUnlockModal(index);
+                }}
+                className="px-4 py-2 rounded-xl bg-black text-white text-sm hover:bg-gray-800 transition-all"
+              >
+                Unlock PDF
+              </button>
+
             </div>
 
-            <p className="text-xs text-gray-500 mb-3">
-              Password Protected
-            </p>
+          ) : file.isBlank ? (
 
-            <button
-              onClick={() => openUnlockModal(index)}
-              className="px-3 py-2 rounded-xl bg-black text-white text-xs hover:bg-gray-800 transition-all"
-            >
-              Unlock PDF
-            </button>
+            <div className="flex items-center justify-center h-full">
 
-          </div>
+              <span className="text-sm text-gray-400">
+                Blank Page
+              </span>
 
-        ) : file.isBlank ? (
+            </div>
 
-          <span className="text-sm text-gray-400">
-            Blank Page
-          </span>
+          ) : thumb ? (
 
-        ) : thumb ? (
+            <img
+              src={thumb}
+              alt="preview"
+              className="w-full h-full object-contain pointer-events-none"
+              style={{
+                transform: `rotate(${file.rotation || 0}deg)`
+              }}
+            />
 
-          <img
-            src={thumb}
-            alt="preview"
-            className="w-full h-full object-cover"
-            style={{
-              transform: `rotate(${file.rotation || 0}deg)`
-            }}
-          />
+          ) : (
 
-        ) : (
+            <div className="flex items-center justify-center h-full">
 
-          <span className="text-xs text-gray-400">
-            Loading...
-          </span>
+              <span className="text-xs text-gray-400">
+                Loading...
+              </span>
 
-        )}
+            </div>
 
-        {/* ACTIONS */}
-        {!locked && (
-          <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition">
+          )}
 
-            {!file.isBlank && (
-              <button
-                onClick={() =>
-                  setPreview(file.preview)
-                }
-                className="p-2 bg-white border rounded-full shadow hover:bg-black hover:text-white"
-              >
-                👁
-              </button>
-            )}
-
-            <button
-              onClick={() => rotate(index)}
-              className="p-2 bg-white border rounded-full shadow hover:bg-black hover:text-white"
-            >
-              🔄
-            </button>
-
-            <button
-              onClick={() => remove(index)}
-              className="p-2 bg-white border rounded-full shadow hover:bg-black hover:text-white"
-            >
-              🗑
-            </button>
-
-          </div>
-        )}
+        </div>
 
       </div>
 
-      {/* FILE NAME */}
-      <p className="text-xs mt-2 truncate text-center text-gray-600">
+      {/* 🔥 FILE NAME */}
+      <div className="mt-3 backdrop-blur-md bg-white/60 border border-gray-200 rounded-xl px-3 py-2 shadow-sm">
 
-        {file.isBlank
-          ? "Blank Page"
-          : file.file.name}
+        <p className="text-xs truncate text-center text-gray-700 font-medium">
 
-      </p>
+          {file.isBlank
+            ? "Blank Page"
+            : file.file.name}
+
+        </p>
+
+      </div>
 
     </div>
   );
@@ -393,7 +438,7 @@ export default function FilePreview({
           strategy={rectSortingStrategy}
         >
 
-          <div className="flex flex-wrap gap-6 mt-6 justify-center">
+          <div className="flex flex-wrap gap-16 mt-6 justify-center">
 
             {files.map((file, index) => (
 
@@ -417,7 +462,7 @@ export default function FilePreview({
             {/* BLANK PAGE */}
             <div
               onClick={addBlankPage}
-              className="border-2 border-dashed rounded-2xl flex items-center justify-center cursor-pointer hover:border-green-500 transition h-72 w-full max-w-[180px]"
+              className="border-2 border-dashed rounded-2xl flex items-center justify-center cursor-pointer hover:border-green-500 transition h-60 w-full max-w-[180px]"
             >
 
               <p className="text-xs text-gray-500 text-center">

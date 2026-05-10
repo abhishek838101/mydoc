@@ -47,7 +47,7 @@ export default function UploadBox({ setFiles }) {
     <div
       {...getRootProps()}
       className="border-2 border-dashed rounded-2xl flex items-center justify-center cursor-pointer hover:border-blue-500 transition
-                h-72 w-full max-w-[180px]"
+                h-60 w-full max-w-[180px]"
     >
       <input {...getInputProps()} />
       <p className="text-xs text-gray-500 text-center px-2">
