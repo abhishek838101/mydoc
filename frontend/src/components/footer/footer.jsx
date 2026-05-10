@@ -6,7 +6,7 @@ export default function Footer() {
   const [openSupport, setOpenSupport] =
     useState(false);
 
-  const upiId = "yourupi@oksbi";
+  const upiId = "7409012617@ptsbi";
 
   return (
 
@@ -115,7 +115,7 @@ export default function Footer() {
             <div className="flex justify-center mb-6">
 
               <img
-                src="/qr.avif"
+                src="/qr.jpeg"
                 alt="UPI QR"
                 className="w-56 h-56 object-contain rounded-2xl border p-2"
               />
