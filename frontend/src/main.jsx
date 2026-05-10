@@ -20,7 +20,10 @@ createRoot(document.getElementById("root")).render(
     <BrowserRouter>
 
       <Routes>
-        <Route path="/" element={<App />} />
+        <Route 
+          path="*" 
+          element={<App />} 
+        />
 
         <Route
           path="/terms"
@@ -38,11 +41,14 @@ createRoot(document.getElementById("root")).render(
         />
 
         <Route
-          path="/merge"
+          path="*merge"
           element={<PdfMerger />}
         />
 
-        <Route path="/split" element={<SplitPDF />} />
+        <Route 
+          path="*split" 
+          element={<SplitPDF />}
+        />
       </Routes>
 
     </BrowserRouter>

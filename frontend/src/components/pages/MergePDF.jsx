@@ -35,6 +35,7 @@ function App() {
       await axios.post(
         "http://localhost:5000/merge",
         (() => {
+
           const testForm = new FormData();
 
           testForm.append(
@@ -53,6 +54,7 @@ function App() {
           );
 
           return testForm;
+
         })(),
         {
           responseType: "blob",
@@ -87,7 +89,9 @@ function App() {
   const mergePDFs = async (customFiles = files) => {
 
     if (customFiles.length < 2) {
+
       toast.error("Upload at least 2 PDFs");
+
       return;
     }
 
@@ -184,7 +188,9 @@ function App() {
         }
 
       } catch (e) {
+
         console.log(e);
+
       }
 
       toast.error("Error merging PDFs");
@@ -197,7 +203,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 text-black flex flex-col">
+    <div className="min-h-screen bg-gray-100 text-black flex flex-col overflow-x-hidden">
 
       <Navbar active="Merge" />
 
@@ -206,73 +212,75 @@ function App() {
 
         <div className="min-h-[calc(100vh-64px)] flex flex-col">
 
-          <div className="flex-1 w-full max-w-[1600px] mx-auto p-6">
+          <div className="flex-1 w-full max-w-[1600px] mx-auto p-4 md:p-6">
 
             <Toaster />
 
             {/* 🔥 TWO COLUMN LAYOUT */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 h-full">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
 
               {/* 🔥 LEFT PANEL */}
-              <div className="lg:col-span-2 bg-white rounded-3xl border border-gray-200 shadow-sm p-8 h-fit sticky top-24">
+              <div className="lg:col-span-2 relative lg:sticky lg:top-24 z-30">
 
-                {/* HEADING */}
-                <h1 className="text-4xl text-center font-bold mb-4">
-                  PDF Merger
-                </h1>
+                <div className="bg-white rounded-3xl border border-gray-200 shadow-sm p-6 md:p-8">
 
-                <p className="text-gray-600 text-center leading-7 mb-8">
-                  Merge multiple PDF files into a single document
-                  securely and instantly.
-                </p>
+                  {/* HEADING */}
+                  <h1 className="text-3xl md:text-4xl text-center font-bold mb-4">
+                    PDF Merger
+                  </h1>
 
-                {/* LINE */}
-                <div className="w-full h-px bg-gray-200 mb-8" />
+                  <p className="text-gray-600 text-center leading-7 mb-8">
+                    Merge multiple PDF files into a single document
+                    securely and instantly.
+                  </p>
 
-                {/* MERGE BUTTON */}
-                <button
-                  onClick={() => mergePDFs()}
-                  disabled={files.length < 2 || loading}
-                  className="relative overflow-hidden w-full px-8 py-4 rounded-2xl text-white bg-blue-600 disabled:opacity-40 shadow-xl hover:scale-[1.02] transition-all duration-300"
-                >
+                  {/* LINE */}
+                  <div className="w-full h-px bg-gray-200 mb-8" />
 
-                  {/* PROGRESS */}
-                  {loading && (
-                    <span
-                      className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-700 via-blue-500 to-blue-700 opacity-80 transition-all duration-300"
-                      style={{ width: `${progress}%` }}
-                    />
-                  )}
+                  {/* MERGE BUTTON */}
+                  <button
+                    onClick={() => mergePDFs()}
+                    disabled={files.length < 2 || loading}
+                    className="relative overflow-hidden w-full px-8 py-4 rounded-2xl text-white bg-blue-600 disabled:opacity-40 shadow-xl hover:scale-[1.02] transition-all duration-300"
+                  >
 
-                  <span className="relative z-10 font-medium text-lg">
+                    {/* PROGRESS */}
+                    {loading && (
+                      <span
+                        className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-700 via-blue-500 to-blue-700 opacity-80 transition-all duration-300"
+                        style={{ width: `${progress}%` }}
+                      />
+                    )}
 
-                    {loading
-                      ? "Merging PDFs..."
-                      : "Merge PDFs"}
+                    <span className="relative z-10 font-medium text-lg">
 
-                  </span>
+                      {loading
+                        ? "Merging PDFs..."
+                        : "Merge PDFs"}
 
-                </button>
+                    </span>
 
-                {/* 🔥 PASSWORD STATUS */}
-                {/* <div className="mt-8">
+                  </button>
 
-                  <h3 className="font-semibold text-lg mb-3">
-                    Protected PDFs
-                  </h3>
+                  {/* 🔥 PROTECTED PDF STATUS */}
+                  {/* <div className="mt-8">
 
-                  <div className="space-y-3">
+                    <h3 className="font-semibold text-lg mb-4">
+                      PDF Status
+                    </h3>
 
-                    {files.filter((f) => f.password).length === 0 ? (
+                    <div className="space-y-3 max-h-[350px] overflow-y-auto pr-1">
 
-                      <p className="text-sm text-gray-500">
-                        No unlocked protected PDFs yet.
-                      </p>
+                      {files.length === 0 && (
 
-                    ) : (
+                        <p className="text-sm text-gray-500">
+                          No PDFs uploaded yet.
+                        </p>
 
-                      files
-                        .filter((f) => f.password)
+                      )}
+
+                      {files
+                        .filter((f) => !f.isBlank)
                         .map((f, i) => (
 
                           <div
@@ -280,42 +288,66 @@ function App() {
                             className="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3"
                           >
 
-                            <p className="text-sm truncate max-w-[180px]">
-                              {f.file.name}
-                            </p>
+                            <div className="flex items-center gap-3 min-w-0">
 
-                            <span className="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full">
-                              Unlocked
-                            </span>
+                              <div className="text-lg">
+
+                                {f.password
+                                  ? "✅"
+                                  : "🔒"}
+
+                              </div>
+
+                              <div className="min-w-0">
+
+                                <p className="text-sm truncate font-medium">
+                                  {f.file.name}
+                                </p>
+
+                                <p className="text-xs text-gray-500">
+
+                                  {f.password
+                                    ? "Unlocked"
+                                    : "Protected / Normal"}
+
+                                </p>
+
+                              </div>
+
+                            </div>
 
                           </div>
 
-                        ))
+                        ))}
 
-                    )}
+                    </div>
 
-                  </div>
+                  </div> */}
 
-                </div> */}
+                </div>
 
               </div>
 
               {/* 🔥 RIGHT PANEL */}
-              <div className="lg:col-span-10 bg-white rounded-3xl border border-gray-200 shadow-sm p-6 min-h-[600px]">
+              <div className="lg:col-span-10 relative z-0 min-w-0">
 
-                {/* EMPTY */}
-                {files.length === 0 && (
-                  <p className="text-center text-gray-500 mb-10">
-                    No files uploaded yet
-                  </p>
-                )}
+                <div className="bg-white rounded-3xl border border-gray-200 shadow-sm p-4 md:p-6 min-h-[600px] overflow-hidden">
 
-                {/* FILE PREVIEW */}
-                <FilePreview
-                  files={files}
-                  setFiles={setFiles}
-                  mergePDFs={mergePDFs}
-                />
+                  {/* EMPTY */}
+                  {files.length === 0 && (
+                    <p className="text-center text-gray-500 mb-10">
+                      No files uploaded yet
+                    </p>
+                  )}
+
+                  {/* FILE PREVIEW */}
+                  <FilePreview
+                    files={files}
+                    setFiles={setFiles}
+                    mergePDFs={mergePDFs}
+                  />
+
+                </div>
 
               </div>
 
