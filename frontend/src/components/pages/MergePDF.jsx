@@ -1,19 +1,15 @@
-import { useState } from "react";
-import FilePreview from "../FilePreview.jsx";
-import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
-
+import bgPattern from "../../assets/bg3.jpg";
+import FilePreview from "../FilePreview.jsx";
 import Footer from "../footer/footer.jsx";
 import Navbar from "../navbar/navbar.jsx";
+import { useState } from "react";
+import axios from "axios";
 
 function App() {
-
   const [files, setFiles] = useState([]);
-
   const [progress, setProgress] = useState(0);
-
   const [loading, setLoading] = useState(false);
-
   // 🔥 PASSWORD MODAL
   const [showPasswordModal, setShowPasswordModal] =
     useState(false);
@@ -203,7 +199,13 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 text-black flex flex-col overflow-x-hidden">
+    <div
+      className="min-h-screen text-black flex flex-col overflow-x-hidden bg-[#f5f5f7] bg-repeat"
+      style={{
+        backgroundImage: `url(${bgPattern})`,
+        backgroundSize: "155px 92px",
+      }}
+    >
 
       <Navbar active="Merge" />
 
@@ -261,68 +263,6 @@ function App() {
                     </span>
 
                   </button>
-
-                  {/* 🔥 PROTECTED PDF STATUS */}
-                  {/* <div className="mt-8">
-
-                    <h3 className="font-semibold text-lg mb-4">
-                      PDF Status
-                    </h3>
-
-                    <div className="space-y-3 max-h-[350px] overflow-y-auto pr-1">
-
-                      {files.length === 0 && (
-
-                        <p className="text-sm text-gray-500">
-                          No PDFs uploaded yet.
-                        </p>
-
-                      )}
-
-                      {files
-                        .filter((f) => !f.isBlank)
-                        .map((f, i) => (
-
-                          <div
-                            key={i}
-                            className="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3"
-                          >
-
-                            <div className="flex items-center gap-3 min-w-0">
-
-                              <div className="text-lg">
-
-                                {f.password
-                                  ? "✅"
-                                  : "🔒"}
-
-                              </div>
-
-                              <div className="min-w-0">
-
-                                <p className="text-sm truncate font-medium">
-                                  {f.file.name}
-                                </p>
-
-                                <p className="text-xs text-gray-500">
-
-                                  {f.password
-                                    ? "Unlocked"
-                                    : "Protected / Normal"}
-
-                                </p>
-
-                              </div>
-
-                            </div>
-
-                          </div>
-
-                        ))}
-
-                    </div>
-
-                  </div> */}
 
                 </div>
 
