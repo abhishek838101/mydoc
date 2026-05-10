@@ -1,184 +1,203 @@
 import { useRef, useState } from "react";
-import * as pdfjsLib from "pdfjs-dist";
-import pdfWorker from "pdfjs-dist/build/pdf.worker?url";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
 import Navbar from "../navbar/navbar.jsx";
 import Footer from "../footer/footer.jsx";
-
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
+import axios from "axios";
 
 export default function UnlockPdf() {
-  const [file, setFile] = useState(null);
-  const [password, setPassword] = useState("");
-  const [thumb, setThumb] = useState(null);
+  const [files, setFiles] = useState([]);
+  const [passwords, setPasswords] = useState({});
+  const [showPass, setShowPass] = useState({});
+  const [progress, setProgress] = useState({});
   const [loading, setLoading] = useState(false);
   const [drag, setDrag] = useState(false);
 
   const inputRef = useRef();
 
-  /* ---------------- FILE LOAD ---------------- */
-  const loadFile = async (f) => {
-    if (!f) return;
-
-    setFile(f);
-
-    try {
-      const url = URL.createObjectURL(f);
-
-      const pdf = await pdfjsLib.getDocument({ url }).promise;
-      const page = await pdf.getPage(1);
-
-      const viewport = page.getViewport({ scale: 0.6 });
-
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-
-      await page.render({ canvasContext: ctx, viewport }).promise;
-
-      setThumb(canvas.toDataURL());
-    } catch {
-      toast.error("Cannot preview PDF");
-    }
+  /* ---------------- ADD FILES ---------------- */
+  const loadFiles = (fileList) => {
+    const arr = Array.from(fileList);
+    setFiles((prev) => [...prev, ...arr]);
   };
 
   /* ---------------- DRAG DROP ---------------- */
   const onDrop = (e) => {
     e.preventDefault();
     setDrag(false);
-    loadFile(e.dataTransfer.files[0]);
+    loadFiles(e.dataTransfer.files);
   };
 
-  /* ---------------- UNLOCK ---------------- */
-  const unlockPdf = async () => {
-    if (!file || !password) {
-      toast.error("Upload file and enter password");
-      return;
+  /* ---------------- PASSWORD CHANGE ---------------- */
+  const setPassword = (index, value) => {
+    setPasswords((prev) => ({
+      ...prev,
+      [index]: value,
+    }));
+  };
+
+  /* ---------------- TOGGLE PASSWORD VIEW ---------------- */
+  const togglePassword = (index) => {
+    setShowPass((prev) => ({
+      ...prev,
+      [index]: !prev[index],
+    }));
+  };
+
+  /* ---------------- SINGLE UNLOCK ---------------- */
+  const unlockSingle = async (file, index) => {
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("password", passwords[index] || "");
+
+      const res = await axios.post(
+        "http://localhost:5000/unlock",
+        formData,
+        {
+          responseType: "blob",
+          onUploadProgress: (event) => {
+            const percent = Math.round(
+              (event.loaded * 100) / event.total
+            );
+
+            setProgress((prev) => ({
+              ...prev,
+              [index]: percent,
+            }));
+          },
+        }
+      );
+
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `unlocked-${file.name}`;
+      link.click();
+
+      toast.success(`${file.name} unlocked`);
+    } catch {
+      toast.error(`Failed: ${file.name}`);
     }
+  };
+
+  /* ---------------- BATCH UNLOCK ---------------- */
+  const unlockBatch = async () => {
+    if (!files.length) return toast.error("No files");
 
     setLoading(true);
 
-    try {
-      const url = URL.createObjectURL(file);
-
-      const pdf = await pdfjsLib.getDocument({
-        url,
-        password,
-      }).promise;
-
-      toast.success("PDF Unlocked!");
-
-      // simulate download
-      const blob = new Blob([await file.arrayBuffer()], {
-        type: "application/pdf",
-      });
-
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = "unlocked.pdf";
-      link.click();
-
-    } catch {
-      toast.error("Wrong password");
-    } finally {
-      setLoading(false);
+    for (let i = 0; i < files.length; i++) {
+      await unlockSingle(files[i], i);
     }
+
+    setLoading(false);
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-100 to-gray-200">
+    <div className="min-h-screen flex flex-col bg-gray-100">
 
       <Navbar active="Unlock" />
 
-      {/* MAIN CONTENT (TAKES ALL AVAILABLE SPACE) */}
-      <div className="flex-1 flex items-center justify-center p-6">
+      <div className="flex-1 flex flex-col items-center justify-center p-6">
 
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-6"
+        {/* UPLOAD BOX */}
+        <div
+          onDragOver={(e) => {
+            e.preventDefault();
+            setDrag(true);
+          }}
+          onDragLeave={() => setDrag(false)}
+          onDrop={onDrop}
+          onClick={() => inputRef.current.click()}
+          className={`w-full max-w-xl border-2 border-dashed p-6 rounded-2xl text-center cursor-pointer ${
+            drag ? "border-black bg-gray-200" : "border-gray-300"
+          }`}
         >
-
-          {/* TITLE */}
-          <h1 className="text-3xl font-bold text-center mb-2">
-            Unlock PDF
-          </h1>
-
-          <p className="text-sm text-gray-500 text-center mb-6">
-            Drag & drop or upload a password protected PDF
-          </p>
-
-          {/* DROP AREA */}
-          <div
-            onDragOver={(e) => {
-              e.preventDefault();
-              setDrag(true);
-            }}
-            onDragLeave={() => setDrag(false)}
-            onDrop={onDrop}
-            onClick={() => inputRef.current.click()}
-            className={`border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition ${
-              drag ? "border-black bg-gray-100" : "border-gray-300"
-            }`}
-          >
-
-            <input
-              ref={inputRef}
-              type="file"
-              accept="application/pdf"
-              hidden
-              onChange={(e) => loadFile(e.target.files[0])}
-            />
-
-            {file ? (
-              <p className="text-sm font-medium">{file.name}</p>
-            ) : (
-              <p className="text-sm text-gray-500">
-                Drag & drop or click to upload
-              </p>
-            )}
-
-          </div>
-
-          {/* THUMBNAIL */}
-          {thumb && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="mt-4 border rounded-xl overflow-hidden"
-            >
-              <img src={thumb} className="w-full" />
-            </motion.div>
-          )}
-
-          {/* PASSWORD */}
           <input
-            type="password"
-            placeholder="Enter password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="mt-4 w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-black outline-none"
+            ref={inputRef}
+            type="file"
+            multiple
+            accept="application/pdf"
+            hidden
+            onChange={(e) => loadFiles(e.target.files)}
           />
 
-          {/* BUTTON */}
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            onClick={unlockPdf}
-            disabled={loading}
-            className="mt-5 w-full py-3 rounded-xl bg-black text-white font-medium hover:bg-gray-900 transition"
-          >
-            {loading ? "Unlocking..." : "Unlock & Download"}
-          </motion.button>
+          Drag & drop multiple PDFs or click
+        </div>
 
-        </motion.div>
+        {/* FILE LIST */}
+        <div className="w-full max-w-xl mt-6 space-y-4">
+
+          {files.map((file, index) => (
+            <motion.div
+              key={index}
+              className="bg-white p-4 rounded-xl shadow"
+            >
+
+              <div className="flex justify-between items-center">
+
+                <p className="text-sm font-medium truncate">
+                  {file.name}
+                </p>
+
+                <button
+                  onClick={() => togglePassword(index)}
+                  className="text-xs text-blue-600"
+                >
+                  {showPass[index] ? "Hide" : "Show"}
+                </button>
+
+              </div>
+
+              {/* PASSWORD INPUT */}
+              <input
+                type={showPass[index] ? "text" : "password"}
+                placeholder="Enter password"
+                value={passwords[index] || ""}
+                onChange={(e) =>
+                  setPassword(index, e.target.value)
+                }
+                className="mt-2 w-full px-3 py-2 border rounded-lg"
+              />
+
+              {/* PROGRESS BAR */}
+              {progress[index] && (
+                <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+                  <div
+                    className="bg-black h-2 rounded-full"
+                    style={{ width: `${progress[index]}%` }}
+                  />
+                </div>
+              )}
+
+              {/* UNLOCK BUTTON */}
+              <button
+                onClick={() => unlockSingle(file, index)}
+                className="mt-3 w-full bg-black text-white py-2 rounded-lg"
+              >
+                Unlock
+              </button>
+
+            </motion.div>
+          ))}
+
+        </div>
+
+        {/* BATCH BUTTON */}
+        {files.length > 0 && (
+          <button
+            onClick={unlockBatch}
+            disabled={loading}
+            className="mt-6 w-full max-w-xl bg-green-600 text-white py-3 rounded-xl"
+          >
+            {loading ? "Processing..." : "Unlock All (Batch)"}
+          </button>
+        )}
 
       </div>
 
-      {/* FOOTER ALWAYS AT BOTTOM */}
       <Footer />
 
     </div>

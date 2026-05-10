@@ -188,42 +188,23 @@ app.post("/merge", async (req, res) => {
         file.data
       );
 
-      let finalPath = inputPath;
+      let finalPath = null;
 
-      // 🔥 TRY UNLOCK
       try {
-
-        await unlockPDF(
-          inputPath,
-          unlockedPath,
-          passwords[i] || ""
-        );
-
+        await unlockPDF(inputPath, unlockedPath, passwords[i] || "");
         finalPath = unlockedPath;
-
       } catch (err) {
-
-        // 🔐 PASSWORD REQUIRED
-        if (
-          err.type === "PASSWORD_REQUIRED"
-        ) {
-
+        if (err.type === "PASSWORD_REQUIRED") {
           return res.status(401).json({
             type: "PASSWORD_REQUIRED",
-
             fileIndex: i,
-
             fileName: file.name,
           });
         }
 
-        // ⚠️ CORRUPT FILE
-        console.log(
-          "⚠️ Using original file:",
-          file.name
-        );
+        console.log("❌ Cannot unlock file:", file.name);
 
-        finalPath = inputPath;
+        continue;
       }
 
       // 🔥 LOAD PDF
@@ -232,15 +213,7 @@ app.post("/merge", async (req, res) => {
         const pdfBytes =
           fs.readFileSync(finalPath);
 
-        const pdf =
-          await PDFDocument.load(
-            pdfBytes,
-            {
-              ignoreEncryption: true,
-
-              throwOnInvalidObject: false,
-            }
-          );
+        const pdf = await PDFDocument.load(pdfBytes);
 
         const pages =
           await mergedPdf.copyPages(
@@ -317,6 +290,28 @@ app.post("/merge", async (req, res) => {
     );
 
     res.status(500).send("Merge failed");
+  }
+});
+
+app.post("/unlock", async (req, res) => {
+  try {
+    const file = req.files.file;
+    const password = req.body.password;
+
+    const inputPath = path.join(tempDir, `${Date.now()}_in.pdf`);
+    const outputPath = path.join(tempDir, `${Date.now()}_out.pdf`);
+
+    fs.writeFileSync(inputPath, file.data);
+
+    await unlockPDF(inputPath, outputPath, password);
+
+    res.download(outputPath, "unlocked.pdf", () => {
+      fs.unlinkSync(inputPath);
+      fs.unlinkSync(outputPath);
+    });
+
+  } catch (err) {
+    res.status(400).send("Unlock failed");
   }
 });
 
