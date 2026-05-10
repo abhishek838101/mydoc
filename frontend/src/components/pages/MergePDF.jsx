@@ -214,14 +214,14 @@ function App() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 h-full">
 
               {/* 🔥 LEFT PANEL */}
-              <div className="lg:col-span-4 bg-white rounded-3xl border border-gray-200 shadow-sm p-8 h-fit sticky top-24">
+              <div className="lg:col-span-2 bg-white rounded-3xl border border-gray-200 shadow-sm p-8 h-fit sticky top-24">
 
                 {/* HEADING */}
-                <h1 className="text-4xl font-bold mb-4">
+                <h1 className="text-4xl text-center font-bold mb-4">
                   PDF Merger
                 </h1>
 
-                <p className="text-gray-600 leading-7 mb-8">
+                <p className="text-gray-600 text-center leading-7 mb-8">
                   Merge multiple PDF files into a single document
                   securely and instantly.
                 </p>
@@ -255,7 +255,7 @@ function App() {
                 </button>
 
                 {/* 🔥 PASSWORD STATUS */}
-                <div className="mt-8">
+                {/* <div className="mt-8">
 
                   <h3 className="font-semibold text-lg mb-3">
                     Protected PDFs
@@ -296,12 +296,12 @@ function App() {
 
                   </div>
 
-                </div>
+                </div> */}
 
               </div>
 
               {/* 🔥 RIGHT PANEL */}
-              <div className="lg:col-span-8 bg-white rounded-3xl border border-gray-200 shadow-sm p-6 min-h-[700px]">
+              <div className="lg:col-span-10 bg-white rounded-3xl border border-gray-200 shadow-sm p-6 min-h-[600px]">
 
                 {/* EMPTY */}
                 {files.length === 0 && (
